@@ -3,15 +3,18 @@
  * @returns { Promise<void> }
  */
 exports.up = function(knex) {
-  return knex.schema.createTable("admins", function (table) {
+  return knex.schema.createTable("users", function (table) {
     table.increments();
-    table.string("email").notNullable().unique();
-    table.string("name");
+    table.string("uuid").defaultTo(knex.raw(`gen_random_uuid ()`));
+    table.string("phone");
+    table.string("profile");
+    table.string("email");
     table.string("password").notNullable();
-    table.string("role").defaultTo("admin");
-
+    table.string("username");
+    table.string("provider");
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
+    table.timestamp("deleted_at");
   });
 };
 
@@ -20,5 +23,5 @@ exports.up = function(knex) {
  * @returns { Promise<void> }
  */
 exports.down = function(knex) {
-  return knex.schema.dropTable("admins");
+    return knex.schema.dropTable('users');
 };

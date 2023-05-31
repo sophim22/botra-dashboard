@@ -1,12 +1,11 @@
-import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
-import {authConfig} from '.';
+import {authConfig} from './';
 
-export const adminGenerateToken = (user) => {
+export const generateToken = (user) => {
   return new Promise((resolve, reject) => {
     jwt.sign(
       {
-        email: user.email,
+        phone: user.phone,
         id: user.id,
       },
       authConfig.secret,
@@ -21,6 +20,7 @@ export const adminGenerateToken = (user) => {
         if (!token) {
           return new Error('Empty token');
         }
+        console.log({token})
 
         return resolve(token);
       }
@@ -28,33 +28,9 @@ export const adminGenerateToken = (user) => {
   })
 }
 
-export const generateToken = (account, customer) => {
-  return new Promise((resolve, reject) => {
-    const expiresAt = dayjs(account.expiresAt).valueOf();
-    jwt.sign(
-      {
-        customer_id: customer.id,
-        email: customer.email,
-        accessToken: account.accessToken,
-      },
-      authConfig.secret,
-      {
-        algorithm: authConfig.algorithms[0],
-        expiresIn: expiresAt,
-      },
-      (err, token) => {
-        if (err) {
-          return reject(err);
-        }
-        if (!token) {
-          return new Error("Empty token");
-        }
-
-        return resolve(token);
-      }
-    );
-  });
-};
-
 export const verifyToken = async (token) => jwt.verify(token, authConfig.secret);
-export const clearSession = token => redis.invokeToken(token);
+
+export const clearSession = async (token) => {
+  const invalid = await redis.invokeToken(token);
+  return invalid;
+}
