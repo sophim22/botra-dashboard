@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 import jwt from 'jsonwebtoken';
 import {authConfig} from '.';
 
@@ -28,19 +27,17 @@ export const adminGenerateToken = (user) => {
   })
 }
 
-export const generateToken = (account, customer) => {
+export const generateToken = (user) => {
   return new Promise((resolve, reject) => {
-    const expiresAt = dayjs(account.expiresAt).valueOf();
     jwt.sign(
       {
-        customer_id: customer.id,
-        email: customer.email,
-        accessToken: account.accessToken,
+        phone: user.phone,
+        id: user.id,
       },
       authConfig.secret,
       {
         algorithm: authConfig.algorithms[0],
-        expiresIn: expiresAt,
+        expiresIn: "48h",
       },
       (err, token) => {
         if (err) {
@@ -56,5 +53,7 @@ export const generateToken = (account, customer) => {
   });
 };
 
-export const verifyToken = async (token) => jwt.verify(token, authConfig.secret);
+export const verifyToken = async (token) =>
+  jwt.verify(token, authConfig.secret);
+
 export const clearSession = token => redis.invokeToken(token);

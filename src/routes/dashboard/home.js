@@ -1,4 +1,4 @@
-import Home from "../app/controllers/home";
+import Home from "../../app/controllers/home";
 
 export default (router) => {
   router.get("/", Home.index);
