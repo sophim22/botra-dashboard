@@ -9,9 +9,12 @@ exports.up = function(knex) {
     table.string("phone");
     table.string("profile");
     table.string("email");
+    table.string("status").defaultTo("pending");
     table.string("password").notNullable();
     table.string("username");
     table.string("provider");
+    table.string('rule').defaultTo('member');
+    table.boolean("phone_verify").defaultTo(false);
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
     table.timestamp("deleted_at");

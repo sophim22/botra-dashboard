@@ -1,14 +1,13 @@
 require("dotenv").config();
 import Twilio from "twilio";
-import setting from "../app/models/Setting";
-export const sendOTPSMS = async (phone, template) => {
-  const smsConfig = setting.smsConfig;
-  if (process.env.APP_ENV === "production") {
-    const twilio = Twilio(smsConfig.account_sid, smsConfig.token);
+
+export const sendOTPSMS = async (phone, templates) => {
+  if (process.env.APP_ENV !== "production") {
+    const twilio = Twilio(process.env.ACCOUNT_SID, process.env.TWILIO_AUTH_TOKEN);
     await twilio.messages.create({
-      body: template,
-      from: smsConfig.phone,
+      body: templates,
+      from: process.env.TWILIO_PHONE,
       to: phone,
     });
   }
-};
+}

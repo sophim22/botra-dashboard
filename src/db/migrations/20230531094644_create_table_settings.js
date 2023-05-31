@@ -12,7 +12,8 @@ exports.up = function(knex) {
       "phone": '', 
       "address": '', 
       "email": ""
-    }))
+    }));
+    table.jsonb("sms_templates");
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
   });

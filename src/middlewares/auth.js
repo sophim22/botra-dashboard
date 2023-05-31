@@ -12,9 +12,10 @@ export const authAccess = async (req, _, next) => {
       if (!keyIndex) {
         const payload = await verifyToken(token);
         const account = await User.query().findOne({ id: payload.id, phone: payload.phone });
-        if (account.status != "active") {
+
+        if (account.status === "suspended") {
           handleClearToken(token);
-          return res.status(401).json({ message: "Your account is blocked!" });
+          return res.status(401).json({ message: "Your account is suspended!" });
         }
         req.currentUser = account;
         req.decoded = payload;
@@ -30,33 +31,6 @@ export const authAccess = async (req, _, next) => {
   next();
 };
 
-export const isAuthorized = async headers => {
-  const authorization = headers["authorization"];
-  if (authorization && authorization.split(" ")[0] === "Bearer") {
-    const token = authorization.split(" ")[1];
-    try {
-      const keyIndex = await redis.get(token);
-      if (!keyIndex) {
-        const payload = await verifyToken(token);
-        const account = await User.query().findOne({ id: payload.id, phone: payload.phone });
-        if (account.status != "active") {
-          handleClearToken(token);
-          return false;
-        }
-      }
-      return true;
-    } catch (e) {
-      if (e?.name == "TokenExpiredError") {
-        handleClearToken(token);
-      }
-      console.log(e);
-      return false;
-    }
-  } else {
-    return false;
-  }
-};
-
 export default async (req, res, next) => {
   const authorization = req.headers["authorization"];
   if (authorization && authorization.split(" ")[0] === "Bearer") {
@@ -68,9 +42,9 @@ export default async (req, res, next) => {
       }
       const payload = await verifyToken(token);
       const account = await User.query().findOne({ id: payload.id, phone: payload.phone });
-      if (account.status != "active") {
+      if (account.status === "suspended") {
         handleClearToken(token);
-        return res.status(401).json({ message: "Your account is blocked!" });
+        return res.status(401).json({ message: "Your account is suspended!" });
       }
       req.decoded = payload;
       req.currentUser = account;

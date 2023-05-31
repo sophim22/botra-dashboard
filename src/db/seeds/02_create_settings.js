@@ -8,9 +8,9 @@ exports.seed = async function (knex) {
   return knex("settings").insert([
     {
       sms_config: {
-        account_sid: "12345",
-        token: "hsdft34235hwhrw",
-        phone: "+8553423253",
+        account_sid: "ACd7c134e8c18cb9d453a0a4f72ab602cd",
+        token: "867c7922bde9434ce4b11b58b7098ad6",
+        phone: "+13203356808",
       },
       email_config: {
         host: "local",
