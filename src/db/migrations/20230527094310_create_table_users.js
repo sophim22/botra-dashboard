@@ -9,7 +9,7 @@ exports.up = function(knex) {
     table.string("phone");
     table.string("profile");
     table.string("email");
-    table.string("status").defaultTo("pending");
+    table.string("status").defaultTo("active");
     table.string("password").notNullable();
     table.string("username");
     table.string("provider");
